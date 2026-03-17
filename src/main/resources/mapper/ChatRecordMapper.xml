@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ChatRecordMapper">
+    <insert id="insert" parameterType="com.example.demo.entity.ChatRecord">
+        INSERT INTO chat_record (
+            user_id,
+            session_id,
+            question,
+            answer,
+            scenic_spot_id,
+            create_time
+        ) VALUES (
+                     #{userId},
+                     #{sessionId},
+                     #{question},
+                     #{answer},
+                     #{scenicSpotId},
+                     NOW()
+                 )
+    </insert>
+    <!-- 接口1：查询用户的会话摘要 -->
+    <select id="selectSessionSummaryByUserId" resultType="com.example.demo.dto.ChatSessionSummaryVO">
+        SELECT
+            session_id AS sessionId,
+            user_id AS userId,
+            MIN(question) AS firstQuestion,
+            MIN(create_time) AS createTime,
+            MAX(create_time) AS lastUpdateTime
+        FROM chat_record
+        WHERE user_id = #{userId}
+        GROUP BY session_id, user_id
+        ORDER BY lastUpdateTime DESC
+    </select>
+
+    <!-- 接口2：查询指定会话的所有消息 -->
+    <select id="selectMessagesBySessionId" resultType="com.example.demo.entity.ChatRecord">
+        SELECT
+            id,
+            user_id AS userId,
+            session_id AS sessionId,
+            question,
+            answer,
+            scenic_spot_id AS scenicSpotId,
+            create_time AS createTime
+        FROM chat_record
+        WHERE user_id = #{userId} AND session_id = #{sessionId}
+        ORDER BY create_time ASC
+    </select>
+
+    <!-- 接口3：查询单条消息详情 -->
+    <select id="selectById" resultType="com.example.demo.entity.ChatRecord">
+        SELECT
+            id,
+            user_id AS userId,
+            session_id AS sessionId,
+            question,
+            answer,
+            scenic_spot_id AS scenicSpotId,
+            create_time AS createTime
+        FROM chat_record
+        WHERE id = #{id}
+    </select>
+</mapper>

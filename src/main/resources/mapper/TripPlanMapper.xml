@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须和Mapper接口全限定名一致 -->
+<mapper namespace="com.example.demo.mapper.TripPlanMapper">
+
+    <!-- 通用结果集映射（复用性更高） -->
+    <resultMap id="TripPlanMap" type="com.example.demo.entity.TripPlan">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="plan_name" property="planName"/>
+        <result column="region" property="region"/>
+        <result column="budget" property="budget"/>
+        <result column="play_type" property="playType"/>
+        <result column="plan_content" property="planContent"/>
+        <result column="plan_type" property="planType"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 行程列表查询 -->
+    <select id="selectListByUserId" resultType="com.example.demo.dto.TripPlanListVO">
+        SELECT id, plan_name AS planName, create_time AS createTime
+        FROM trip_plan
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 行程详情查询 -->
+    <select id="selectDetailById" resultType="com.example.demo.entity.TripPlan">
+        SELECT id, user_id AS userId, plan_name AS planName, region, budget,
+               play_type AS playType, plan_content AS planContent,
+               create_time AS createTime, update_time AS updateTime
+        FROM trip_plan
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.example.demo.entity.TripPlan" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO trip_plan (
+            user_id,
+            plan_name,
+            region,
+            budget,
+            play_type,
+            plan_content,
+            create_time,
+            update_time
+        ) VALUES (
+                     #{userId},
+                     #{planName},
+                     #{region},
+                     #{budget},
+                     #{playType},
+                     #{planContent},
+                     #{createTime},
+                     #{updateTime}
+                 )
+    </insert>
+    <select id="countByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM trip_plan WHERE user_id = #{userId}
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserScenicCollectMapper">
+
+    <!-- 查询用户是否收藏某景点 -->
+    <select id="countByUserAndScenic" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_scenic_collect
+        WHERE user_id = #{userId} AND scenic_spot_id = #{scenicSpotId}
+    </select>
+
+    <!-- 新增收藏记录 -->
+    <insert id="insert" parameterType="com.example.demo.entity.UserScenicCollect">
+        INSERT INTO user_scenic_collect (user_id, scenic_spot_id, create_time)
+        VALUES (#{userId}, #{scenicSpotId}, NOW())
+    </insert>
+
+    <!-- 删除收藏记录 -->
+    <delete id="deleteByUserAndScenic">
+        DELETE FROM user_scenic_collect
+        WHERE user_id = #{userId} AND scenic_spot_id = #{scenicSpotId}
+    </delete>
+
+    <!-- 查询用户收藏的所有景点ID -->
+    <select id="selectScenicIdsByUserId" resultType="java.lang.Long">
+        SELECT scenic_spot_id
+        FROM user_scenic_collect
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="countByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM user_scenic_collect WHERE user_id = #{userId}
+    </select>
+
+</mapper>
